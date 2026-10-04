@@ -88,8 +88,14 @@ export class brightnessManager {
       }
       try {
         let data = settings.getValueSync(this.context, Constants.KEY_BRIGHTNESS_STATUS, JSON.stringify(this.getDefault()));
-        Log.showDebug(TAG, `after brightness datachange settings getValue ${parseInt(data)}`);
-        mBrightnessValue.set(parseInt(data));
+        if (/^\d+$/.test(data)) {
+          let brightness = Number.parseInt(data, 10);
+          Log.showDebug(TAG, `after brightness datachange settings getValue ${brightness}`);
+          mBrightnessValue.set(brightness);
+        } else {
+          Log.showWarn(TAG, `after brightness datachange settings getValue leftover: ${data}`);
+          mBrightnessValue.set(this.getDefault());
+        }
       } catch (err) {
         Log.showError(TAG, `registerBrightness: ${context}, ${JSON.stringify(err)}`);
       }
@@ -111,8 +117,14 @@ export class brightnessManager {
     }
     try {
       let data = settings.getValueSync(this.context, Constants.KEY_BRIGHTNESS_STATUS, JSON.stringify(this.getDefault()));
-      Log.showInfo(TAG, `settings getValue ${parseInt(data)}`);
-      mBrightnessValue.set(parseInt(data));
+      if (/^\d+$/.test(data)) {
+        let brightness = Number.parseInt(data, 10);
+        Log.showInfo(TAG, `settings getValue ${brightness}`);
+        mBrightnessValue.set(brightness);
+      } else {
+        Log.showWarn(TAG, `settings getValue leftover: ${data}`);
+        mBrightnessValue.set(this.getDefault());
+      }
     } catch (err) {
       Log.showError(TAG, `getValue: ${context}, ${JSON.stringify(err)}`);
     }
